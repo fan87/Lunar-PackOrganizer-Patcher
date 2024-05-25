@@ -1,0 +1,23 @@
+{
+	"schemaVersion": 1,
+	"id": "lunar-rp-patcher",
+	"version": "${version}",
+	"name": "LunarClient RP Patcher",
+	"description": "This patch fixes the bug where Resource Pack Organizer takes a while (8 ~ 20 seconds) to load and switch resource pack",
+	"authors": [
+		"fan87"
+	],
+	"license": "GPL-3.0",
+	"icon": "assets/lunar-rp-patcher/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"me.fan87.lunarrppatcher.LunarRPPatcherMod"
+		]
+	},
+	"depends": {
+		"fabricloader": "*",
+		"minecraft": "*",
+		"java": ">=17"
+	}
+}

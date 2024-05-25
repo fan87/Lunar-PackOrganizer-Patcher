@@ -1,0 +1,87 @@
+plugins {
+	id 'fabric-loom' version '1.6-SNAPSHOT'
+	id 'com.github.johnrengelman.shadow' version '8.1.1'
+	id 'maven-publish'
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+	archivesName = project.archives_base_name
+}
+
+configurations {
+	embedImplementation {
+	}
+}
+
+configurations.getByName("implementation").extendsFrom(configurations["embedImplementation"])
+
+repositories {
+	maven {
+		url = uri("https://jitpack.io")
+	}
+}
+
+dependencies {
+	// To change the versions see the gradle.properties file
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings loom.officialMojangMappings()
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+	embedImplementation "com.github.fan87.Java-Injector:native-agent:master-SNAPSHOT"
+	embedImplementation 'org.ow2.asm:asm:9.7'
+	embedImplementation 'org.ow2.asm:asm-util:9.7'
+	embedImplementation 'org.ow2.asm:asm-commons:9.7'
+}
+
+processResources {
+	inputs.property "version", project.version
+	inputs.property "minecraft_version", project.minecraft_version
+	inputs.property "loader_version", project.loader_version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 17
+}
+
+java {
+	withSourcesJar()
+
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
+}
+
+jar {
+	from("LICENSE") {
+		rename { "${it}_${project.base.archivesName.get()}"}
+	}
+}
+
+publishing {
+	publications {
+		create("mavenJava", MavenPublication) {
+			artifactId = project.archives_base_name
+			from components.java
+		}
+	}
+
+	repositories {
+	}
+}
+
+tasks.shadowJar {
+	configurations = [project.configurations.getByName("embedImplementation")]
+}
+
+
+tasks.remapJar {
+	dependsOn("shadowJar")
+
+	inputFile = shadowJar.archiveFile.get()
+}
