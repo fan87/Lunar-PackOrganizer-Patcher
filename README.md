@@ -13,7 +13,7 @@ However, I'm planning for a complete rewrite of Java-Injector (at the time of wr
 
 
 ### Technical Detail
-When you have a lot of unzipped resource packs (resource packs that's not a zip file, but a directory), Lunar Client will try to look into it recursively
+When you have a lot of unzipped resource packs (resource packs that's not a zip file, but a directory), Lunar Client will try to look into it recursively if it does not have `pack.mcmeta`
 and (I suppose) does that for every single resource pack you have (have not confirmed or checked that).
 
 A possible more efficient algorithm for that could be by caching where the pack's location is, or does the search in a single run - 
